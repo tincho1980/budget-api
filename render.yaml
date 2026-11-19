@@ -36,6 +36,9 @@ services:
       # Jobs run inside Puma: the free plan has a single process.
       - key: SOLID_QUEUE_IN_PUMA
         value: "true"
+      # Frontend allowed to call /api/v1 from the browser (CORS), e.g. https://app.example.com
+      - key: FRONTEND_ORIGIN
+        sync: false
       # Demo data on the first deploy, with a password of your own.
       - key: SEED_DEMO_DATA
         value: "true"

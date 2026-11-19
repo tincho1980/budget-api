@@ -4,6 +4,9 @@
 # and recreated between test runs. Don't rely on the data there!
 
 Rails.application.configure do
+  # Fixed origin for the CORS tests, independent of FRONTEND_ORIGIN and of when the app boots.
+  config.x.frontend_origin = "https://frontend.example.com"
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # While tests run files are not watched, reloading is not necessary.
