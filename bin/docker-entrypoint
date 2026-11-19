@@ -1,7 +1,9 @@
 #!/bin/bash -e
 
-# If running the rails server then create or migrate existing database
-if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
+# If running the rails server then create or migrate existing database.
+# Render runs the Docker command through a shell ("/bin/sh -c ./bin/rails server"),
+# so look for "rails server" anywhere in the command, not only in the last two arguments.
+if [[ " $* " == *"rails server"* ]]; then
   ./bin/rails db:prepare
 
   # Demo deploys load the seed data. db/seeds.rb skips it if there is data already.
