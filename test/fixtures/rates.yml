@@ -1,0 +1,14 @@
+junior_current:
+  level: 0
+  hourly_value: 20000
+  valid_from: 2026-01-01
+
+senior_previous:
+  level: 2
+  hourly_value: 30000
+  valid_from: 2025-01-01
+
+senior_current:
+  level: 2
+  hourly_value: 38000
+  valid_from: 2026-01-01

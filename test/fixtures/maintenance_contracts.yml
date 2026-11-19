@@ -1,0 +1,6 @@
+acme_contract:
+  client: acme
+  monthly_amount: 100000
+  due_day: 10
+  starts_on: 2026-01-01
+  status: 0

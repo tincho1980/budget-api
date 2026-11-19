@@ -1,0 +1,10 @@
+acme:
+  business_name: Acme SA
+  tax_id: 30-11111111-1
+  email: contacto@acme.com.ar
+  active: true
+
+globex:
+  business_name: Globex SRL
+  tax_id: 30-22222222-2
+  active: true

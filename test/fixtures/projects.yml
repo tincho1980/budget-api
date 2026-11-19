@@ -1,0 +1,14 @@
+acme_web:
+  client: acme
+  name: Sitio web Acme
+  status: 1
+
+acme_closed:
+  client: acme
+  name: Proyecto cerrado
+  status: 3
+
+globex_app:
+  client: globex
+  name: App Globex
+  status: 0

@@ -1,0 +1,64 @@
+require "test_helper"
+require_relative "api_test_helper"
+
+class Api::V1::BudgetsControllerTest < ActionDispatch::IntegrationTest
+  include ApiTestHelper
+
+  setup do
+    @budget = budgets(:acme_sent)
+    @headers = auth_headers(users(:acme_portal))
+  end
+
+  test "shows the budget without internal rates or costs" do
+    get api_v1_budget_path(@budget), headers: @headers
+
+    assert_response :success
+    assert_equal "380000.00", json.dig("budget", "total")
+    assert_no_match(/hourly_value|rate|38000\.0/, response.body.sub('"total":"380000.00"', ""))
+  end
+
+  test "approves a sent budget" do
+    post approve_api_v1_budget_path(@budget), headers: @headers
+
+    assert_response :success
+    assert_equal "approved", json.dig("budget", "status")
+    assert @budget.reload.approved?
+  end
+
+  test "rejects a sent budget" do
+    post reject_api_v1_budget_path(@budget), headers: @headers
+
+    assert_response :success
+    assert @budget.reload.rejected?
+  end
+
+  test "approving notifies the admins by email" do
+    assert_enqueued_email_with BudgetMailer, :decision_notice, args: [ @budget ] do
+      post approve_api_v1_budget_path(@budget), headers: @headers
+    end
+  end
+
+  test "a failed decision sends no email" do
+    @budget.approve
+
+    assert_no_enqueued_emails do
+      post reject_api_v1_budget_path(@budget), headers: @headers
+    end
+  end
+
+  test "cannot approve twice" do
+    @budget.approve
+    post approve_api_v1_budget_path(@budget), headers: @headers
+
+    assert_response :unprocessable_content
+  end
+
+  test "the client can download the signed PDF" do
+    budget = budgets(:closed_approved)
+    budget.signed_document.attach(io: File.open(file_fixture("presupuesto_firmado.pdf")), filename: "firmado.pdf")
+
+    get api_v1_budget_path(budget), headers: @headers
+
+    assert_match %r{/rails/active_storage/blobs/}, json.dig("budget", "signed_document_url")
+  end
+end
