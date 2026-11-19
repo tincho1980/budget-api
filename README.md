@@ -233,6 +233,16 @@ Siempre con el mismo formato:
 | 422 | Error de validación o transición de estado no permitida |
 | 429 | Demasiados intentos de login (10 cada 3 minutos) |
 
+### CORS
+
+Un frontend en otro dominio puede llamar a `/api/v1/*` desde el navegador si su origen está en `FRONTEND_ORIGIN`
+(`config/initializers/cors.rb`, con `rack-cors` primero en la pila de middleware):
+
+- Métodos `GET`, `POST`, `DELETE` y `OPTIONS`; headers `Authorization` y `Content-Type`.
+- El preflight (`OPTIONS`) lo responde `rack-cors` antes de llegar a Rails, así que no necesita token.
+- Sin cookies ni credenciales: el token viaja en `Authorization`.
+- El back-office no expone CORS.
+
 ### Decisiones de diseño
 
 - **Separación de contextos.** `Api::V1::BaseController` hereda de `ActionController::API`, no de `ApplicationController`:
@@ -281,6 +291,7 @@ Al arrancar, el contenedor corre `bin/rails db:prepare`, que crea las tablas en 
 | `RAILS_MASTER_KEY` | Contenido de `config/master.key` |
 | `DATABASE_URL` / `QUEUE_DATABASE_URL` | Conexión directa (sin pooler) a cada base |
 | `S3_ENDPOINT`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` | Datos del bucket (`S3_REGION` es `auto` para R2) |
+| `FRONTEND_ORIGIN` | Origen del frontend que llama a la API desde el navegador, por ejemplo `https://app.example.com` (sin `/` al final). Sin ella, CORS no habilita ningún origen |
 | `SEED_PASSWORD` | Contraseña de los usuarios de demo. Sin ella sería `password`, pública en este README |
 | `ACTIVE_STORAGE_SERVICE` | Opcional. `local` guarda los adjuntos en el disco, sin bucket (en Render se borran en cada reinicio). Si falta alguna `S3_*` y no está en `local`, la app no arranca y el error dice cuál |
 | `SMTP_ADDRESS`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD` | Opcionales. Sin SMTP, los mails se escriben en `tmp/mails` y no se envían |

@@ -25,5 +25,8 @@ module AdavraSales
     # config.eager_load_paths << Rails.root.join("extras")
     config.i18n.default_locale = :"es-AR"
     config.i18n.available_locales = [ :"es-AR" ]
+
+    # Origin of the frontend allowed to call /api/v1 from the browser (config/initializers/cors.rb).
+    config.x.frontend_origin = ENV["FRONTEND_ORIGIN"].to_s.strip.presence
   end
 end

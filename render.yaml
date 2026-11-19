@@ -9,7 +9,10 @@ services:
     branch: develop
     # Puma directly, without Thruster: Render terminates HTTPS and tells the app
     # which port to listen on (PORT), and Thruster would listen on 80 instead.
-    dockerCommand: ./bin/rails server
+    # The entrypoint is called explicitly because a custom Docker Command may
+    # replace the image's ENTRYPOINT, and then db:prepare and the seeds never run.
+    # If Render keeps the ENTRYPOINT, both are idempotent and simply run twice.
+    dockerCommand: ./bin/docker-entrypoint ./bin/rails server
     healthCheckPath: /up
     envVars:
       - key: RAILS_MASTER_KEY
@@ -33,6 +36,9 @@ services:
       # Jobs run inside Puma: the free plan has a single process.
       - key: SOLID_QUEUE_IN_PUMA
         value: "true"
+      # Frontend allowed to call /api/v1 from the browser (CORS), e.g. https://app.example.com
+      - key: FRONTEND_ORIGIN
+        sync: false
       # Demo data on the first deploy, with a password of your own.
       - key: SEED_DEMO_DATA
         value: "true"
