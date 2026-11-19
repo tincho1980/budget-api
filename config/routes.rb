@@ -44,6 +44,10 @@ Rails.application.routes.draw do
     resources :users, except: %i[ show destroy ]
   end
 
+  # API docs: Swagger UI at /api-docs, OpenAPI file at /api-docs/v1/openapi.yaml
+  mount Rswag::Ui::Engine => "/api-docs"
+  mount Rswag::Api::Engine => "/api-docs"
+
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
       post "login", to: "sessions#create"
