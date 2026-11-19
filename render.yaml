@@ -9,7 +9,10 @@ services:
     branch: develop
     # Puma directly, without Thruster: Render terminates HTTPS and tells the app
     # which port to listen on (PORT), and Thruster would listen on 80 instead.
-    dockerCommand: ./bin/rails server
+    # The entrypoint is called explicitly because a custom Docker Command may
+    # replace the image's ENTRYPOINT, and then db:prepare and the seeds never run.
+    # If Render keeps the ENTRYPOINT, both are idempotent and simply run twice.
+    dockerCommand: ./bin/docker-entrypoint ./bin/rails server
     healthCheckPath: /up
     envVars:
       - key: RAILS_MASTER_KEY
