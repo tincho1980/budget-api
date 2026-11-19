@@ -26,6 +26,16 @@ Rails.application.configure do
   # keeps them on disk, for running production mode on a machine with a persistent disk.
   config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "s3_compatible").to_sym
 
+  # Without them ActiveRecord tries a local socket and fails with a connection error
+  # that does not mention the variables.
+  if ENV["SECRET_KEY_BASE_DUMMY"].to_s.empty?
+    missing = %w[ DATABASE_URL QUEUE_DATABASE_URL ].select { |name| ENV[name].to_s.strip.empty? }
+    if missing.any?
+      raise "Faltan las conexiones a PostgreSQL: #{missing.join(", ")}. DATABASE_URL es la base de la app y " \
+        "QUEUE_DATABASE_URL la de la cola de jobs (en Neon, dos bases del mismo proyecto, conexión directa)."
+    end
+  end
+
   # Without these the AWS SDK fails at boot with "missing required option :name",
   # which says nothing about the cause. The Docker build precompiles assets with
   # SECRET_KEY_BASE_DUMMY and no secrets at all, so it is not checked there.
