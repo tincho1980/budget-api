@@ -147,6 +147,21 @@ Se envían en segundo plano (`deliver_later`) y no muestran tarifas ni tareas in
 Base: `http://localhost:3000/api/v1`. Todas las respuestas son JSON. Salvo el login, cada request lleva el header
 `Authorization: Bearer <token>`.
 
+**Documentación OpenAPI (Swagger):** [`/api-docs`](https://adavra-sales.onrender.com/api-docs) muestra la
+documentación interactiva, con "Authorize" para pegar el token y "Try it out" para probar cada endpoint. El documento está
+en [`swagger/v1/openapi.yaml`](swagger/v1/openapi.yaml) y se sirve en `/api-docs/v1/openapi.yaml`.
+
+El documento se genera a partir de los request specs de [`spec/requests/api/v1`](spec/requests/api/v1) con
+[rswag](https://github.com/rswag/rswag): cada respuesta documentada es un test que llama a la API y valida el JSON contra
+su esquema (`spec/swagger_helper.rb`). Si se cambia la API:
+
+```bash
+bundle exec rspec                    # corre los specs contra la app
+bin/rails rswag:specs:swaggerize     # regenera swagger/v1/openapi.yaml
+```
+
+La CI falla si el `openapi.yaml` commiteado no coincide con los specs.
+
 La colección de Postman está en [`docs/adavra-sales-api.postman_collection.json`](docs/adavra-sales-api.postman_collection.json):
 el login guarda el token y "Mis proyectos" guarda los ids que usan las demás requests.
 
@@ -259,7 +274,8 @@ Un frontend en otro dominio puede llamar a `/api/v1/*` desde el navegador si su 
 ## Calidad y seguridad
 
 ```bash
-bin/rails test        # 94 tests: reglas de negocio, API, mails, adjuntos, jobs y acceso al back-office
+bin/rails test        # 101 tests: reglas de negocio, API, CORS, mails, adjuntos, jobs y acceso al back-office
+bundle exec rspec     # 30 request specs de la API que generan el OpenAPI
 bin/rubocop           # sin infracciones
 bin/brakeman          # 0 advertencias
 bin/bundler-audit     # sin vulnerabilidades conocidas
