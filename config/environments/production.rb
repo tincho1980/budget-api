@@ -26,6 +26,18 @@ Rails.application.configure do
   # keeps them on disk, for running production mode on a machine with a persistent disk.
   config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "s3_compatible").to_sym
 
+  # Without these the AWS SDK fails at boot with "missing required option :name",
+  # which says nothing about the cause. The Docker build precompiles assets with
+  # SECRET_KEY_BASE_DUMMY and no secrets at all, so it is not checked there.
+  if config.active_storage.service == :s3_compatible && ENV["SECRET_KEY_BASE_DUMMY"].to_s.empty?
+    missing = %w[ S3_ENDPOINT S3_BUCKET S3_ACCESS_KEY_ID S3_SECRET_ACCESS_KEY ].select { |name| ENV[name].to_s.strip.empty? }
+    if missing.any?
+      raise "Active Storage guarda los adjuntos en un bucket S3 y faltan estas variables de entorno: " \
+        "#{missing.join(", ")}. Cargalas en el servicio, o definí ACTIVE_STORAGE_SERVICE=local " \
+        "para guardarlos en el disco (en Render se borran en cada reinicio)."
+    end
+  end
+
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   config.assume_ssl = true
 
