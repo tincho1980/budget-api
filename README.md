@@ -282,6 +282,7 @@ Al arrancar, el contenedor corre `bin/rails db:prepare`, que crea las tablas en 
 | `DATABASE_URL` / `QUEUE_DATABASE_URL` | Conexión directa (sin pooler) a cada base |
 | `S3_ENDPOINT`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` | Datos del bucket (`S3_REGION` es `auto` para R2) |
 | `SEED_PASSWORD` | Contraseña de los usuarios de demo. Sin ella sería `password`, pública en este README |
+| `ACTIVE_STORAGE_SERVICE` | Opcional. `local` guarda los adjuntos en el disco, sin bucket (en Render se borran en cada reinicio). Si falta alguna `S3_*` y no está en `local`, la app no arranca y el error dice cuál |
 | `SMTP_ADDRESS`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD` | Opcionales. Sin SMTP, los mails se escriben en `tmp/mails` y no se envían |
 
 En el plan gratuito la app se duerme tras un rato sin visitas: tarda unos segundos en despertar y, mientras duerme,
