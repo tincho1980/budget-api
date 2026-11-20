@@ -17,7 +17,7 @@
       <tbody>
         <% charges.each do |charge| %>
           <tr>
-            <td class="tabular-nums"><%= charge.period %></td>
+            <td class="font-mono whitespace-nowrap"><%= charge.period %></td>
             <% if show_client %>
               <td><%= link_to charge.maintenance_contract.client.business_name, admin_maintenance_contract_path(charge.maintenance_contract), class: "link" %></td>
             <% end %>
@@ -39,5 +39,5 @@
     </table>
   </div>
 <% else %>
-  <p class="text-sm text-gray-500">No hay cuotas.</p>
+  <p class="text-sm text-subtle">No hay cuotas.</p>
 <% end %>

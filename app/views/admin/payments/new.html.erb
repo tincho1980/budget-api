@@ -1,6 +1,6 @@
 <% content_for :title, "Registrar pago" %>
 <h1 class="page-title mb-1">Registrar pago</h1>
-<p class="text-sm text-gray-500 mb-6">Se imputa automáticamente a las cuotas impagas más antiguas del cliente.</p>
+<p class="page-subtitle mb-8">Se imputa automáticamente a las cuotas impagas más antiguas del cliente.</p>
 
 <%= form_with model: [ :admin, @payment ] do |form| %>
   <%= render "admin/shared/errors", record: @payment %>
@@ -25,7 +25,7 @@
   <div class="form-field">
     <%= form.label :receipt %>
     <%= form.file_field :receipt, accept: "application/pdf,image/jpeg,image/png", class: "form-input" %>
-    <p class="text-xs text-gray-500 mt-1">Opcional. PDF, JPG o PNG de hasta 5 MB.</p>
+    <p class="form-hint">Opcional. PDF, JPG o PNG de hasta 5 MB.</p>
   </div>
   <div class="form-field">
     <%= form.label :notes %>

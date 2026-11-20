@@ -20,7 +20,7 @@
     <% @clients.each do |client| %>
       <tr>
         <td><%= link_to client.business_name, admin_client_path(client), class: "link" %></td>
-        <td class="tabular-nums"><%= client.tax_id %></td>
+        <td class="font-mono whitespace-nowrap"><%= client.tax_id %></td>
         <td><%= client.contact_name %></td>
         <td><%= client.email %></td>
         <td><%= client.active? ? "Activo" : "Inactivo" %></td>

@@ -3,7 +3,7 @@
 <div class="page-header">
   <div>
     <h1 class="page-title"><%= @project.name %></h1>
-    <p class="text-sm text-gray-500"><%= link_to @project.client.business_name, admin_client_path(@project.client), class: "link" %></p>
+    <p class="text-sm text-subtle"><%= link_to @project.client.business_name, admin_client_path(@project.client), class: "link" %></p>
   </div>
   <div class="flex gap-2">
     <%= link_to "Editar", edit_admin_project_path(@project), class: "btn" %>
@@ -43,5 +43,5 @@
     </tbody>
   </table>
 <% else %>
-  <p class="text-sm text-gray-500">Todavía no hay presupuestos.</p>
+  <p class="text-sm text-subtle">Todavía no hay presupuestos.</p>
 <% end %>

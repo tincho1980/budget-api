@@ -3,7 +3,7 @@
 <div class="page-header">
   <div>
     <h1 class="page-title">Contrato de mantenimiento <%= render "admin/shared/status", status: @contract.status %></h1>
-    <p class="text-sm text-gray-500"><%= link_to @contract.client.business_name, admin_client_path(@contract.client), class: "link" %></p>
+    <p class="text-sm text-subtle"><%= link_to @contract.client.business_name, admin_client_path(@contract.client), class: "link" %></p>
   </div>
   <div class="flex flex-wrap gap-2">
     <%= button_to "Generar cuota del mes", generate_charge_admin_maintenance_contract_path(@contract), class: "btn-primary" %>

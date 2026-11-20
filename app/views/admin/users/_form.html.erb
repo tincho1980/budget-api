@@ -21,7 +21,7 @@
     <%= form.label :client_id %>
     <%= form.collection_select :client_id, Client.order(:business_name), :id, :business_name,
           { include_blank: "Ninguno (equipo interno)" }, class: "form-input" %>
-    <p class="text-xs text-gray-500 mt-1">Sólo para usuarios con rol Cliente.</p>
+    <p class="text-xs text-subtle mt-1">Sólo para usuarios con rol Cliente.</p>
   </div>
   <div class="form-field">
     <%= form.label :password %>

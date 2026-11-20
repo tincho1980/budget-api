@@ -3,7 +3,7 @@
 <div class="page-header">
   <div>
     <h1 class="page-title">Presupuesto v<%= @budget.version %> <%= render "admin/shared/status", status: @budget.status %></h1>
-    <p class="text-sm text-gray-500">
+    <p class="text-sm text-subtle">
       <%= link_to @budget.project.name, admin_project_path(@budget.project), class: "link" %> ·
       <%= @budget.project.client.business_name %>
     </p>
@@ -33,13 +33,13 @@
   <% if @budget.signed_document.attached? %>
     <p class="text-sm mb-3">
       <%= link_to @budget.signed_document.filename.to_s, rails_blob_path(@budget.signed_document, disposition: "inline"), class: "link", target: "_blank" %>
-      <span class="text-gray-500">· <%= number_to_human_size(@budget.signed_document.byte_size) %></span>
+      <span class="text-subtle">· <%= number_to_human_size(@budget.signed_document.byte_size) %></span>
     </p>
   <% else %>
-    <p class="text-sm text-gray-500 mb-3">Todavía no se adjuntó la copia firmada por el cliente.</p>
+    <p class="text-sm text-subtle mb-3">Todavía no se adjuntó la copia firmada por el cliente.</p>
   <% end %>
   <%= form_with model: @budget, url: attach_signed_document_admin_budget_path(@budget), method: :patch, class: "flex flex-wrap items-center gap-2 mb-6" do |form| %>
-    <%= form.file_field :signed_document, accept: "application/pdf", class: "text-sm" %>
+    <%= form.file_field :signed_document, accept: "application/pdf", class: "form-input max-w-sm" %>
     <%= form.submit (@budget.signed_document.attached? ? "Reemplazar PDF" : "Adjuntar PDF"), class: "btn" %>
   <% end %>
 <% end %>
@@ -68,14 +68,14 @@
     </thead>
     <tbody>
       <% @items.each do |item| %>
-        <tr class="<%= "text-gray-400" unless item.billable %>">
+        <tr class="<%= "text-subtle" unless item.billable %>">
           <td><%= item.module_name %></td>
           <td><%= item.description %><%= " (no facturable)" unless item.billable %></td>
           <td><%= status_label(item.level) %></td>
           <td class="num"><%= number_to_currency(item.rate.hourly_value) %></td>
           <td class="num"><%= hours(item.estimated_hours) %></td>
           <td class="num"><%= hours(item.logged_hours) %></td>
-          <td class="num <%= item.deviation.positive? ? "text-red-700" : "text-green-700" %>">
+          <td class="num <%= item.deviation.positive? ? "text-negative" : "text-positive" %>">
             <%= item.deviation.positive? ? "+" : "" %><%= hours(item.deviation) %>
           </td>
           <td class="num"><%= number_to_currency(item.subtotal) %></td>

@@ -1,31 +1,38 @@
-<div class="mx-auto md:w-2/3 w-full">
-  <% if alert = flash[:alert] %>
-    <p class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg inline-block" id="alert"><%= alert %></p>
-  <% end %>
+<% content_for :title, "Ingresar" %>
 
-  <% if notice = flash[:notice] %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
-  <% end %>
-
-  <h1 class="font-bold text-4xl">Ingresar</h1>
-
-  <%= form_with url: session_url, class: "contents" do |form| %>
-    <div class="my-5">
-      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Email", value: params[:email_address], class: "block shadow-sm rounded-md border border-gray-400 focus:outline-blue-600 px-3 py-2 mt-2 w-full" %>
+<div class="grid lg:grid-cols-[1fr_400px] gap-12 lg:gap-24 items-center min-h-[calc(100vh-180px)]">
+  <section class="hidden lg:block">
+    <div class="flex items-center gap-2.5 mb-24">
+      <span class="grid place-items-center size-6 rounded-md bg-primary text-sm font-semibold">a</span>
+      <span class="text-base font-semibold tracking-[-0.02em]">adavra</span>
     </div>
+    <h2 class="text-[40px] leading-[1.1] font-semibold tracking-[-0.03em] max-w-md">Presupuestos, horas y cobranza en un solo lugar.</h2>
+    <p class="text-muted mt-5 max-w-md leading-relaxed">
+      El back-office del equipo: armá y enviá presupuestos, cargá horas, seguí las cuotas de mantenimiento y confirmá los pagos que informan los clientes.
+    </p>
+  </section>
 
-    <div class="my-5">
-      <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Contraseña", maxlength: 72, class: "block shadow-sm rounded-md border border-gray-400 focus:outline-blue-600 px-3 py-2 mt-2 w-full" %>
-    </div>
+  <section class="w-full max-w-md mx-auto">
+    <p class="eyebrow mb-3">Back-office</p>
+    <h1 class="page-title">Ingresar</h1>
+    <p class="page-subtitle mb-8">Usá el email y la contraseña de tu cuenta del equipo.</p>
 
-    <div class="col-span-6 sm:flex sm:items-center sm:gap-4">
-      <div class="inline">
-        <%= form.submit "Ingresar", class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+    <%= form_with url: session_url do |form| %>
+      <div class="form-field">
+        <%= form.label :email_address, "Email" %>
+        <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "tu@adavra.com", value: params[:email_address], class: "form-input max-w-none" %>
       </div>
 
-      <div class="mt-4 text-sm text-gray-500 sm:mt-0">
-        <%= link_to "¿Olvidaste tu contraseña?", new_password_path, class: "text-gray-700 underline hover:no-underline" %>
+      <div class="form-field">
+        <%= form.label :password, "Contraseña" %>
+        <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "••••••••", maxlength: 72, class: "form-input max-w-none" %>
       </div>
-    </div>
-  <% end %>
+
+      <%= form.submit "Ingresar", class: "btn-primary btn-lg w-full mt-2", data: { turbo_submits_with: "Ingresando…" } %>
+    <% end %>
+
+    <p class="mt-6 text-[13px] text-subtle">
+      <%= link_to "¿Olvidaste tu contraseña?", new_password_path, class: "link" %>
+    </p>
+  </section>
 </div>

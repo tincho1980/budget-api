@@ -1,17 +1,17 @@
-<div class="mx-auto md:w-2/3 w-full">
-  <% if alert = flash[:alert] %>
-    <p class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg inline-block" id="alert"><%= alert %></p>
-  <% end %>
+<% content_for :title, "Recuperar contraseña" %>
 
-  <h1 class="font-bold text-4xl">Forgot your password?</h1>
+<section class="max-w-md mx-auto pt-12">
+  <h1 class="page-title">¿Olvidaste tu contraseña?</h1>
+  <p class="page-subtitle mb-8">Te enviamos un link por email para elegir una nueva. Vence en 15 minutos.</p>
 
-  <%= form_with url: passwords_path, class: "contents" do |form| %>
-    <div class="my-5">
-      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "block shadow-sm rounded-md border border-gray-400 focus:outline-solid focus:outline-blue-600 px-3 py-2 mt-2 w-full" %>
+  <%= form_with url: passwords_path do |form| %>
+    <div class="form-field">
+      <%= form.label :email_address, "Email" %>
+      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "tu@adavra.com", value: params[:email_address], class: "form-input max-w-none" %>
     </div>
 
-    <div class="inline">
-      <%= form.submit "Email reset instructions", class: "w-full sm:w-auto text-center rounded-lg px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
-    </div>
+    <%= form.submit "Enviar instrucciones", class: "btn-primary btn-lg w-full mt-2", data: { turbo_submits_with: "Enviando…" } %>
   <% end %>
-</div>
+
+  <p class="mt-6 text-[13px]"><%= link_to "Volver a ingresar", new_session_path, class: "link" %></p>
+</section>
