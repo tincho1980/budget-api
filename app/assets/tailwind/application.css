@@ -1,31 +1,120 @@
 @import "tailwindcss";
 
+/* Tokens from the portal design (budget-app/docs/ui.pen and DESIGN-SYSTEM.md),
+   so the back-office and the client portal share one visual language. */
+@theme {
+  --color-bg: #09090c;
+  --color-surface: #131419;
+  --color-surface-hover: #1a1b21;
+  --color-line: rgb(255 255 255 / 0.1);
+  --color-line-strong: rgb(255 255 255 / 0.18);
+
+  --color-primary: #0047ab;
+  --color-primary-hover: #0055cc;
+  --color-accent: #2e7fd9;
+
+  --color-fg: #ffffff;
+  --color-muted: #c7cbd6;
+  --color-subtle: #8a8f9c;
+
+  /* State colors: translucent background + light text, readable on dark. */
+  --color-pending: #fcd34d;
+  --color-pending-bg: rgb(245 158 11 / 0.15);
+  --color-partial: #7fb3ea;
+  --color-partial-bg: rgb(46 127 217 / 0.15);
+  --color-paid: #6ee7a0;
+  --color-paid-bg: rgb(34 197 94 / 0.15);
+  --color-overdue: #fca5a5;
+  --color-overdue-bg: rgb(239 68 68 / 0.15);
+  --color-neutral-bg: rgb(255 255 255 / 0.08);
+
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+
+  --radius-control: 8px;
+  --radius-card: 16px;
+}
+
+@layer base {
+  html { color-scheme: dark; }
+  body { @apply bg-bg text-fg font-sans text-sm antialiased; }
+  ::selection { @apply bg-primary text-fg; }
+}
+
 @layer components {
-  .page-title { @apply text-2xl font-bold; }
-  .page-header { @apply flex flex-wrap items-center justify-between gap-3 mb-6; }
-  .section-title { @apply text-lg font-semibold mt-8 mb-3; }
+  /* Page structure */
+  .page-title { @apply text-[32px] leading-tight font-semibold tracking-[-0.025em]; }
+  .page-subtitle { @apply text-sm text-muted mt-2; }
+  .page-header { @apply flex flex-wrap items-end justify-between gap-4 mb-8; }
+  .section-title { @apply text-xl font-semibold tracking-[-0.015em] mt-10 mb-3; }
+  .eyebrow { @apply text-xs font-medium uppercase tracking-[0.12em] text-subtle; }
+  .card { @apply bg-surface border border-line rounded-card p-6; }
 
-  .btn { @apply inline-block px-3 py-1.5 rounded border border-gray-300 bg-white text-sm cursor-pointer hover:bg-gray-50; }
-  .btn-primary { @apply inline-block px-3 py-1.5 rounded bg-blue-700 text-white text-sm cursor-pointer hover:bg-blue-800; }
-  .btn-danger { @apply inline-block px-3 py-1.5 rounded border border-red-300 text-red-700 bg-white text-sm cursor-pointer hover:bg-red-50; }
-  .link { @apply text-blue-700 underline hover:no-underline; }
+  /* Navigation */
+  .nav-link { @apply inline-flex items-center px-3 py-2 rounded-control text-sm font-medium text-muted hover:text-fg hover:bg-surface-hover transition-colors; }
+  .nav-link-active { @apply bg-surface text-fg font-semibold; }
 
-  .data-table { @apply w-full text-sm border-collapse; }
-  .data-table th { @apply text-left font-medium text-gray-500 border-b px-2 py-2 whitespace-nowrap; }
-  .data-table td { @apply border-b border-gray-100 px-2 py-2 align-top; }
-  .num { @apply text-right tabular-nums whitespace-nowrap; }
+  /* Buttons: radius 8, padding 12/20 on large actions, 600 weight */
+  .btn, .btn-primary, .btn-danger, .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-control text-sm font-semibold cursor-pointer whitespace-nowrap transition-colors
+      disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+  .btn { @apply border border-line-strong text-fg bg-transparent hover:bg-surface-hover; }
+  .btn-primary { @apply bg-primary text-fg hover:bg-primary-hover; }
+  .btn-danger { @apply bg-overdue-bg text-overdue border border-[rgb(239_68_68/0.3)] hover:bg-[rgb(239_68_68/0.22)]; }
+  .btn-ghost { @apply text-muted hover:text-fg; }
+  .btn-lg { @apply px-5 py-3; }
+  .link { @apply text-accent hover:text-fg transition-colors; }
 
-  .details { @apply grid grid-cols-[max-content_1fr] gap-x-6 gap-y-1 text-sm; }
-  .details dt { @apply text-gray-500; }
+  /* Tables: a surface card with hairline rows */
+  .data-table { @apply w-full text-sm border-separate border-spacing-0 bg-surface border border-line rounded-card overflow-hidden; }
+  .data-table th { @apply text-left text-xs font-medium text-subtle px-4 py-3 border-b border-line whitespace-nowrap; }
+  .data-table td { @apply px-4 py-3.5 border-b border-line align-top text-muted; }
+  .data-table td:first-child { @apply text-fg font-medium; }
+  .data-table tbody tr:last-child td { @apply border-b-0; }
+  .data-table tbody tr:hover td { @apply bg-surface-hover; }
+  .data-table tfoot td { @apply border-t border-line border-b-0 text-fg font-semibold; }
+  .num { @apply text-right font-mono tabular-nums whitespace-nowrap; }
+  .data-table td.num { @apply text-fg; }
+  .data-table th.num { @apply text-right font-sans; }
 
-  .form-field { @apply mb-4; }
-  .form-field label { @apply block text-sm font-medium mb-1; }
-  .form-input { @apply border border-gray-300 rounded px-2 py-1.5 w-full max-w-md; }
+  /* Definition list for detail screens */
+  .details { @apply grid grid-cols-[max-content_1fr] gap-x-8 gap-y-3 text-sm bg-surface border border-line rounded-card p-6; }
+  .details dt { @apply text-subtle; }
+  .details dd { @apply text-fg; }
 
-  .badge { @apply inline-block px-2 py-0.5 rounded-full text-xs bg-gray-100 whitespace-nowrap; }
-  .badge-draft, .badge-pending, .badge-pending_review, .badge-survey, .badge-paused { @apply bg-amber-100 text-amber-900; }
-  .badge-sent, .badge-in_progress, .badge-partial { @apply bg-blue-100 text-blue-900; }
-  .badge-approved, .badge-paid, .badge-confirmed, .badge-active, .badge-delivered { @apply bg-green-100 text-green-900; }
-  .badge-rejected, .badge-overdue, .badge-cancelled { @apply bg-red-100 text-red-900; }
-  .badge-closed { @apply bg-gray-200 text-gray-700; }
+  /* Forms */
+  .form-field { @apply mb-5; }
+  .form-field label { @apply block text-[13px] text-muted mb-2; }
+  .form-input {
+    @apply block w-full max-w-md h-12 px-4 rounded-control bg-surface border border-line-strong text-fg placeholder:text-subtle
+      focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30;
+  }
+  textarea.form-input { @apply h-auto min-h-24 py-3; }
+  select.form-input { @apply pr-10; }
+  input[type="file"].form-input { @apply h-auto py-3 file:mr-4 file:px-3 file:py-1.5 file:rounded-control file:border file:border-line-strong file:bg-transparent file:text-fg file:font-semibold; }
+  input[type="checkbox"] { @apply size-4 accent-primary; }
+  .form-hint { @apply text-xs text-subtle mt-2; }
+
+  /* Flash messages and errors */
+  .flash { @apply mb-6 px-[18px] py-3.5 rounded-xl text-sm font-medium; }
+  .flash-notice { @apply bg-paid-bg text-paid; }
+  .flash-alert { @apply bg-overdue-bg text-overdue; }
+
+  /* Status badges: never color alone, the label always goes inside */
+  .badge { @apply inline-block px-2.5 py-1 rounded-md text-xs font-medium whitespace-nowrap bg-neutral-bg text-muted; }
+  .badge-draft, .badge-pending, .badge-pending_review, .badge-survey, .badge-paused { @apply bg-pending-bg text-pending; }
+  .badge-sent, .badge-in_progress, .badge-partial { @apply bg-partial-bg text-partial; }
+  .badge-approved, .badge-paid, .badge-confirmed, .badge-active, .badge-delivered { @apply bg-paid-bg text-paid; }
+  .badge-rejected, .badge-overdue, .badge-cancelled { @apply bg-overdue-bg text-overdue; }
+  .badge-closed { @apply bg-neutral-bg text-subtle; }
+
+  /* Amount colors */
+  .text-positive { @apply text-paid; }
+  .text-negative { @apply text-overdue; }
+}
+
+/* Small screens: wide tables scroll sideways instead of breaking the page. */
+@media (max-width: 768px) {
+  .data-table { display: block; overflow-x: auto; }
 }
