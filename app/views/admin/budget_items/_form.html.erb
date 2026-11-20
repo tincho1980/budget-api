@@ -16,7 +16,7 @@
   <div class="form-field">
     <%= form.label :level %>
     <%= form.select :level, enum_options(BudgetItem, :levels), { prompt: "Elegí un nivel" }, class: "form-input", required: true %>
-    <p class="text-xs text-gray-500 mt-1">Se valoriza con la tarifa vigente de ese nivel y queda congelada.</p>
+    <p class="text-xs text-subtle mt-1">Se valoriza con la tarifa vigente de ese nivel y queda congelada.</p>
   </div>
   <div class="form-field">
     <%= form.label :position %>

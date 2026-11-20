@@ -8,7 +8,7 @@
     <%= form.label :budget_item_id, "Tarea" %>
     <%= form.select :budget_item_id, grouped_options_for_select(@task_options, @time_entry.budget_item_id),
           { prompt: "Elegí una tarea" }, class: "form-input", required: true %>
-    <p class="text-xs text-gray-500 mt-1">Tareas de presupuestos aprobados en proyectos abiertos.</p>
+    <p class="text-xs text-subtle mt-1">Tareas de presupuestos aprobados en proyectos abiertos.</p>
   </div>
   <% if Current.user.role_admin? %>
     <div class="form-field">

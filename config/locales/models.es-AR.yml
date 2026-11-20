@@ -25,6 +25,7 @@ es-AR:
         users: Usuarios
         maintenance_contracts: Contratos
       project:
+        client_id: Cliente
         client: Cliente
         name: Nombre
         description: Descripción
@@ -56,12 +57,15 @@ es-AR:
         valid_from: Vigente desde
         budget_items: Ítems
       time_entry:
+        budget_item_id: Tarea
+        user_id: Persona
         budget_item: Ítem
         user: Usuario
         worked_on: Fecha
         hours: Horas
         description: Descripción
       user:
+        client_id: Cliente
         name: Nombre
         email_address: Email
         password: Contraseña
@@ -72,6 +76,8 @@ es-AR:
         time_entries: Horas registradas
         registered_payments: Pagos registrados
       maintenance_contract:
+        client_id: Cliente
+        project_id: Proyecto
         client: Cliente
         project: Proyecto
         monthly_amount: Monto mensual
@@ -88,6 +94,7 @@ es-AR:
         status: Estado
         payment_applications: Imputaciones
       payment:
+        client_id: Cliente
         client: Cliente
         registered_by: Registrado por
         paid_on: Fecha de pago

@@ -1,112 +1,125 @@
 <% content_for :title, "Dashboard de cobranza" %>
 
-<h1 class="text-2xl font-bold mb-6">Dashboard de cobranza</h1>
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Dashboard de cobranza</h1>
+    <p class="page-subtitle">Estado de las cuotas de mantenimiento al <%= l(Date.current) %>.</p>
+  </div>
+  <% if @payments_in_review.any? %>
+    <%= link_to admin_payments_path, class: "flex items-center gap-3 px-[18px] py-3.5 rounded-xl bg-pending-bg text-pending font-medium" do %>
+      <%= pluralize(@payments_in_review.size, "pago", plural: "pagos") %> esperando confirmación
+      <span class="font-semibold">Revisar →</span>
+    <% end %>
+  <% end %>
+</div>
 
-<dl class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-  <div class="border rounded p-4 bg-white">
-    <dt class="text-sm text-gray-500">Cobrado este mes</dt>
-    <dd class="text-2xl font-semibold tabular-nums text-green-700"><%= number_to_currency(@collected_this_month) %></dd>
+<dl class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+  <div class="card">
+    <dt class="eyebrow">Cobrado este mes</dt>
+    <dd class="mt-2 text-[28px] font-medium font-mono tabular-nums tracking-tight text-paid"><%= number_to_currency(@collected_this_month) %></dd>
   </div>
-  <div class="border rounded p-4 bg-white">
-    <dt class="text-sm text-gray-500">Pendiente (no vencido)</dt>
-    <dd class="text-2xl font-semibold tabular-nums"><%= number_to_currency(@pending_total) %></dd>
+  <div class="card">
+    <dt class="eyebrow">Pendiente (no vencido)</dt>
+    <dd class="mt-2 text-[28px] font-medium font-mono tabular-nums tracking-tight"><%= number_to_currency(@pending_total) %></dd>
   </div>
-  <div class="border rounded p-4 bg-white">
-    <dt class="text-sm text-gray-500">Vencido</dt>
-    <dd class="text-2xl font-semibold tabular-nums text-red-700"><%= number_to_currency(@overdue_total) %></dd>
+  <div class="card">
+    <dt class="eyebrow">Vencido</dt>
+    <dd class="mt-2 text-[28px] font-medium font-mono tabular-nums tracking-tight text-overdue"><%= number_to_currency(@overdue_total) %></dd>
   </div>
 </dl>
 
-<section class="mb-8">
-  <h2 class="text-xl font-bold mb-2">Cuotas vencidas por antigüedad</h2>
-  <table>
-    <thead>
-      <tr><th class="text-left pr-6">Atraso</th><th class="text-left pr-6">Cuotas</th><th class="text-left">Saldo</th></tr>
-    </thead>
-    <tbody>
-      <% @overdue_buckets.each do |label, bucket| %>
-        <tr><td class="pr-6"><%= label %></td><td class="pr-6"><%= bucket[:count] %></td><td><%= number_to_currency(bucket[:balance]) %></td></tr>
-      <% end %>
-    </tbody>
-  </table>
-</section>
+<div class="grid lg:grid-cols-[2fr_3fr] gap-x-6">
+  <section>
+    <h2 class="section-title">Cuotas vencidas por antigüedad</h2>
+    <table class="data-table">
+      <thead><tr><th>Atraso</th><th class="num">Cuotas</th><th class="num">Saldo</th></tr></thead>
+      <tbody>
+        <% @overdue_buckets.each do |label, bucket| %>
+          <tr>
+            <td><%= label %></td>
+            <td class="num"><%= bucket[:count] %></td>
+            <td class="num <%= "text-negative" if bucket[:balance].positive? %>"><%= number_to_currency(bucket[:balance]) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </section>
 
-<section class="mb-8">
-  <h2 class="text-xl font-bold mb-2">Clientes con deuda</h2>
-  <table>
-    <thead>
-      <tr><th class="text-left pr-6">Cliente</th><th class="text-left pr-6">Cuotas impagas</th><th class="text-left pr-6">Saldo</th><th class="text-left">Máximo atraso</th></tr>
-    </thead>
-    <tbody>
-      <% @debtors.each do |debtor| %>
-        <tr>
-          <td class="pr-6"><%= debtor[:client].business_name %></td>
-          <td class="pr-6"><%= debtor[:charges] %></td>
-          <td class="pr-6"><%= number_to_currency(debtor[:balance]) %></td>
-          <td><%= debtor[:max_days_overdue] %> días</td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-</section>
+  <section>
+    <h2 class="section-title">Clientes con deuda</h2>
+    <% if @debtors.any? %>
+      <table class="data-table">
+        <thead><tr><th>Cliente</th><th class="num">Cuotas impagas</th><th class="num">Saldo</th><th class="num">Máximo atraso</th></tr></thead>
+        <tbody>
+          <% @debtors.each do |debtor| %>
+            <tr>
+              <td><%= link_to debtor[:client].business_name, admin_client_path(debtor[:client]), class: "hover:text-accent" %></td>
+              <td class="num"><%= debtor[:charges] %></td>
+              <td class="num"><%= number_to_currency(debtor[:balance]) %></td>
+              <td class="num <%= "text-negative" if debtor[:max_days_overdue].positive? %>"><%= debtor[:max_days_overdue] %> días</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="card text-muted">Ningún cliente tiene cuotas impagas.</p>
+    <% end %>
+  </section>
+</div>
 
-<section class="mb-8">
-  <h2 class="text-xl font-bold mb-2">Pagos en revisión</h2>
+<section>
+  <h2 class="section-title">Pagos en revisión</h2>
   <% if @payments_in_review.any? %>
-    <table>
-      <thead>
-        <tr><th class="text-left pr-6">Fecha</th><th class="text-left pr-6">Cliente</th><th class="text-left pr-6">Monto</th><th class="text-left">Informado por</th></tr>
-      </thead>
+    <table class="data-table">
+      <thead><tr><th>Fecha</th><th>Cliente</th><th>Informado por</th><th class="num">Monto</th></tr></thead>
       <tbody>
         <% @payments_in_review.each do |payment| %>
           <tr>
-            <td class="pr-6"><%= l(payment.paid_on) %></td>
-            <td class="pr-6"><%= payment.client.business_name %></td>
-            <td class="pr-6"><%= number_to_currency(payment.amount) %></td>
+            <td><%= link_to l(payment.paid_on), admin_payment_path(payment), class: "hover:text-accent" %></td>
+            <td><%= payment.client.business_name %></td>
             <td><%= payment.registered_by.name %></td>
+            <td class="num"><%= number_to_currency(payment.amount) %></td>
           </tr>
         <% end %>
       </tbody>
     </table>
   <% else %>
-    <p>No hay pagos pendientes de revisión.</p>
+    <p class="card text-muted">No hay pagos pendientes de revisión.</p>
   <% end %>
 </section>
 
-<section class="mb-8">
-  <h2 class="text-xl font-bold mb-2">Últimos pagos registrados</h2>
-  <table>
-    <thead>
-      <tr><th class="text-left pr-6">Fecha</th><th class="text-left pr-6">Cliente</th><th class="text-left">Monto</th></tr>
-    </thead>
-    <tbody>
-      <% @recent_payments.each do |payment| %>
-        <tr>
-          <td class="pr-6"><%= l(payment.paid_on) %></td>
-          <td class="pr-6"><%= payment.client.business_name %></td>
-          <td><%= number_to_currency(payment.amount) %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-</section>
+<div class="grid lg:grid-cols-2 gap-x-6">
+  <section>
+    <h2 class="section-title">Últimos pagos registrados</h2>
+    <table class="data-table">
+      <thead><tr><th>Fecha</th><th>Cliente</th><th class="num">Monto</th></tr></thead>
+      <tbody>
+        <% @recent_payments.each do |payment| %>
+          <tr>
+            <td><%= l(payment.paid_on) %></td>
+            <td><%= payment.client.business_name %></td>
+            <td class="num"><%= number_to_currency(payment.amount) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </section>
 
-<section class="mb-8">
-  <h2 class="text-xl font-bold mb-2">Presupuestos</h2>
-  <table>
-    <thead>
-      <tr><th class="text-left pr-6">Proyecto</th><th class="text-left pr-6">Cliente</th><th class="text-left pr-6">Versión</th><th class="text-left pr-6">Estado</th><th class="text-left">Total</th></tr>
-    </thead>
-    <tbody>
-      <% @budgets.each do |budget| %>
-        <tr>
-          <td class="pr-6"><%= budget.project.name %></td>
-          <td class="pr-6"><%= budget.project.client.business_name %></td>
-          <td class="pr-6">v<%= budget.version %></td>
-          <td class="pr-6"><%= status_label(budget.status) %></td>
-          <td><%= number_to_currency(budget.total) %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-</section>
+  <section>
+    <h2 class="section-title">Presupuestos</h2>
+    <table class="data-table">
+      <thead><tr><th>Proyecto</th><th>Cliente</th><th>Versión</th><th>Estado</th><th class="num">Total</th></tr></thead>
+      <tbody>
+        <% @budgets.each do |budget| %>
+          <tr>
+            <td><%= link_to budget.project.name, admin_budget_path(budget), class: "hover:text-accent" %></td>
+            <td><%= budget.project.client.business_name %></td>
+            <td class="font-mono">v<%= budget.version %></td>
+            <td><%= render "admin/shared/status", status: budget.status %></td>
+            <td class="num"><%= number_to_currency(budget.total) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </section>
+</div>

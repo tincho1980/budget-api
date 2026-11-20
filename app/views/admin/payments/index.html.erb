@@ -7,7 +7,7 @@
 
 <h2 class="section-title mt-0">En revisión</h2>
 <% if @in_review.any? %>
-  <p class="text-sm text-gray-500 mb-2">Informados por los clientes desde el portal. No imputan hasta que se confirman.</p>
+  <p class="text-sm text-subtle mb-2">Informados por los clientes desde el portal. No imputan hasta que se confirman.</p>
   <table class="data-table mb-6">
     <thead><tr><th>Fecha</th><th>Cliente</th><th>Informado por</th><th>Medio</th><th>Comprobante</th><th class="num">Monto</th><th></th></tr></thead>
     <tbody>
@@ -21,7 +21,7 @@
             <% if payment.receipt.attached? %>
               <%= link_to "Ver", rails_blob_path(payment.receipt, disposition: "inline"), class: "link", target: "_blank" %>
             <% else %>
-              <span class="text-gray-400">—</span>
+              <span class="text-subtle">—</span>
             <% end %>
           </td>
           <td class="num"><%= number_to_currency(payment.amount) %></td>
@@ -34,7 +34,7 @@
     </tbody>
   </table>
 <% else %>
-  <p class="text-sm text-gray-500 mb-6">No hay pagos pendientes de revisión.</p>
+  <p class="page-subtitle mb-8">No hay pagos pendientes de revisión.</p>
 <% end %>
 
 <h2 class="section-title">Historial</h2>
