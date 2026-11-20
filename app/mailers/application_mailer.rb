@@ -1,4 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "Adavra <no-responder@adavra.com>"
+  # In production MAIL_FROM must be a sender verified in the SMTP provider (Brevo).
+  default from: ENV.fetch("MAIL_FROM", "Adavra <no-responder@adavra.com>")
   layout "mailer"
 end
