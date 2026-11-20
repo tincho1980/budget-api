@@ -21,6 +21,11 @@ gem "jbuilder"
 # CORS for the frontend that calls /api/v1 from the browser (config/initializers/cors.rb)
 gem "rack-cors"
 
+# OpenAPI docs for /api/v1: swagger/v1/openapi.yaml is generated from spec/requests
+# (rake rswag:specs:swaggerize) and served with Swagger UI at /api-docs
+gem "rswag-api"
+gem "rswag-ui"
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.7"
 
@@ -72,6 +77,10 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # Request specs that document the API and generate the OpenAPI file (only spec/, the rest stays in Minitest)
+  gem "rspec-rails"
+  gem "rswag-specs"
 end
 
 group :development do

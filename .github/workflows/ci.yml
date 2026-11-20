@@ -98,3 +98,17 @@ jobs:
           # Locally Rails connects through the Unix socket; here it needs host and credentials.
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/adavra_sales_test
         run: bin/rails db:test:prepare test
+
+      - name: Run API specs (rswag)
+        env:
+          RAILS_ENV: test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/adavra_sales_test
+        run: bundle exec rspec
+
+      # The committed swagger/v1/openapi.yaml must match the specs: regenerate it and
+      # fail if it changed (run `bin/rails rswag:specs:swaggerize` and commit the result).
+      - name: Check the OpenAPI file is up to date
+        env:
+          RAILS_ENV: test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/adavra_sales_test
+        run: bin/rails rswag:specs:swaggerize && git diff --exit-code swagger/
