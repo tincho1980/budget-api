@@ -58,7 +58,7 @@ gem "tailwindcss-rails"
 
 # json 3.x takes parse options as keywords only, which breaks ActiveSupport::JSON.decode
 # in Rails 8.1 (signed cookies, sessions and JSON params). Remove once Rails supports it.
-gem "json", "~> 2.10"
+gem "json", "~> 3.1"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
